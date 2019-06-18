@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-from sys import stdin
-
 def line_overlap(x1, x2, x3, x4):
     # Considering the lines are on the same axis, there are two cases where the lines don't overlap:
     # Case 1: Line 1 is completely after Line 2 => X1 > X4
@@ -11,10 +9,13 @@ def line_overlap(x1, x2, x3, x4):
     # Ergo, X1 <= X4 and X2 >= X3
     return x1 <= x4 and x2 >= x3
 
-for line in stdin: 
-    x1, x2, x3, x4 = [ int(s) for s in line.split( ' ' ) ]
+if __name__ == '__main__':
+    from sys import stdin
 
-    if line_overlap(x1, x2, x3, x4):
-        print( "Yes" )
-    else: 
-        print( "No" );
+    for line in stdin: 
+        x1, x2, x3, x4 = [ int(s) for s in line.split( ' ' ) ]
+
+        if line_overlap(x1, x2, x3, x4):
+            print( "Yes" )
+        else: 
+            print( "No" )
