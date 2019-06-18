@@ -9,21 +9,21 @@ The program will read 4 integers per line from STDIN, expecting them to be separ
 Inputing directly from keyboard:
 
 ```
-$ ./line_overlap.py
+$ ./check_lines_overlap.py
 1 5 2 6
 Yes
 ```
 
 Using an input file:
 ```
-$ cat line_overlap.input.txt
+$ cat lines.input.txt
 1 5 2 6
 1 5 6 8
 2 6 1 5
 1 5 5 6
 3 4 5 6
 
-$ ./line_overlap.py < line_overlap.input.txt
+$ ./check_lines_overlap.py < lines.input.txt
 Yes
 No
 Yes
@@ -36,14 +36,14 @@ No
 The function can also be used as a library
 
 ```
-from line_overlap import line_overlap
+from check_lines_overlap import check_lines_overlap
 
 x1 = 1
 x2 = 5
 x3 = 2
 x4 = 6
 
-if line_overlap(x1, x2, x3, x4):
+if check_lines_overlap(x1, x2, x3, x4):
     print( "Yes" )
 else: 
     print( "No" )
