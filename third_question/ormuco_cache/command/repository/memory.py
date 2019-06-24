@@ -1,0 +1,26 @@
+from collections import deque
+from .base import BaseRepository
+
+
+class MemoryRepository(BaseRepository):
+    def __init__(self, settings):
+        super().__init__(settings)
+        self.cached_items = deque()
+
+    def retrieve(self, key):
+        index = 0
+        for item in self.cached_items:
+            if item.key == key:
+                cache_hit = item
+                if index > 0:
+                    del self.cached_items[index]
+                    self.cached_items.appendleft(cache_hit)
+                return cache_hit
+            index = index + 1
+        return None
+
+    def store(self, cache_item):
+        self.cached_items.appendleft(cache_item)
+
+        if len(self.cached_items) > self.settings.cache_max_size:
+            self.cached_items.pop()
