@@ -1,9 +1,9 @@
-from .command import RetriveCommand, StoreCommand
+from .command import RetrieveCommand, StoreCommand
 
-class OrmucoClient:
+class OrmucoCacheClient:
     def __init__(self, settings):
         self.settings = settings
-        self.retrieveCommand = RetriveCommand(settings)
+        self.retrieveCommand = RetrieveCommand(settings)
         self.storeCommand = StoreCommand(settings)
 
     def retrieve(self, key):

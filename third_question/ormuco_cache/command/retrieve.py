@@ -1,6 +1,8 @@
 from .repository import RepositoryFactory
 
-class RetriveCommand:
+class RetrieveCommand:
+    COMMAND_PREFIX = 'RTRV'
+
     def __init__(self, settings): 
         self.repository = RepositoryFactory.buildRepository(settings)
 

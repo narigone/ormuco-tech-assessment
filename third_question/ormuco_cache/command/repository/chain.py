@@ -9,10 +9,11 @@ class ChainRepository(BaseRepository):
         self.networkRepository = NetworkRepository(settings)
 
     def retrieve(self, key):
-        if self.memoryRepository.has_key(key):
-            return self.memoryRepository.retrieve(key)
+        cache_item = self.memoryRepository.retrieve(key)
+        if cache_item != None:
+            return cache_item
         return self.networkRepository.retrieve(key)
  
-    def store(self, key, data):
-        self.memoryRepository.store(key, data)
-        self.networkRepository.store(key, data) 
+    def store(self, cache_item):
+        self.memoryRepository.store(cache_item)
+        self.networkRepository.store(cache_item) 

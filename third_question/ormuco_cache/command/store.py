@@ -4,6 +4,8 @@ from .repository import RepositoryFactory
 from .domain import CacheItem
 
 class StoreCommand:
+    COMMAND_PREFIX = 'STR'
+
     def __init__(self, settings): 
         self.settings = settings
         self.repository = RepositoryFactory.buildRepository(settings)
