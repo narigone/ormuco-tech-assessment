@@ -17,7 +17,7 @@ class RepositoryFactory:
         return RepositoryFactory.network_repository
 
     def buildRepository(settings):
-        if settings.server:
+        if settings.server and not settings.is_server:
             return RepositoryFactory.get_network_repository(settings)
         else:
             return RepositoryFactory.get_memory_repository(settings)

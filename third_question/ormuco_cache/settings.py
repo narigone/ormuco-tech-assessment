@@ -10,11 +10,9 @@ class OrmucoCacheClientSettings:
         self.cache_expiration = 60
 
         self.server = OrmucoServerSettings("localhost", 11142)
+        self.is_server = False
 
-class OrmucoCacheServerSettings:
+class OrmucoCacheServerSettings(OrmucoCacheClientSettings):
     def __init__(self):
-        self.cache_max_size = 128
-        self.cache_mem_size = 128 * 1024 * 1024
-        self.cache_expiration = 60
-
-        self.server = OrmucoServerSettings("localhost", 11142)
+        super().__init__()
+        self.is_server = True

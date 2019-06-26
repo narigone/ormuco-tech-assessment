@@ -29,7 +29,12 @@ class MemoryRepository(BaseRepository):
         return cache_hit
 
     def store(self, cache_item):
-        self.cached_items.appendleft(cache_item)
+        original_cached_item = self.retrieve(cache_item.key)
+        if original_cached_item == None:
+            self.cached_items.appendleft(cache_item)
+        else:
+            original_cached_item.data = cache_item.data
+            original_cached_item.expires = cache_item.expires
 
         if len(self.cached_items) > self.settings.cache_max_size:
             self.cached_items.pop()

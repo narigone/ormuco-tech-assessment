@@ -3,7 +3,6 @@ from twisted.protocols import basic
 
 import json
 
-
 class PublishProtocol(basic.LineReceiver):
     def __init__(self, factory):
         self.factory = factory
@@ -14,22 +13,36 @@ class PublishProtocol(basic.LineReceiver):
     def connectionLost(self, reason):
         self.factory.clients.remove(self)
 
-    def lineReceived(self, line): 
-        result = self.factory.commandParser.parse(line.decode("utf-8") )
+    def lineReceived(self, line):
+        decoded_line = line.decode("utf-8")
+        result = self.factory.command_parser.parse(line.decode("utf-8"))
 
-        for c in self.factory.clients:
+        for client in self.factory.clients:
+            if self.is_client_sender(client, self.transport):
+                self.send_response_to_emitter(result, client)
+            elif decoded_line.startswith('STR'):
+                client.sendLine(line)
+
+    def is_client_sender(self, client, sender):
+        return client.transport.repstr == sender.repstr
+
+    def send_response_to_emitter(self, result, client):
+        try:
             if result == True:
-                c.sendLine(b"ACK")
+                client.sendLine(b"ACK")
             elif result == None:
-                c.sendLine(b"MISS")
+                client.sendLine(b"MISS")
             else:
-                payload = "DATA " + json.dumps(result)
-                c.sendLine(payload.encode())
+                payload = json.dumps(result)
+                client.sendLine(payload.encode())
+        except:
+            client.sendLine(b"NOP")
+
 
 class PublishFactory(protocol.Factory):
-    def __init__(self, commandParser):
+    def __init__(self, command_parser):
         self.clients = set()
-        self.commandParser = commandParser
+        self.command_parser = command_parser
 
     def buildProtocol(self, addr):
         return PublishProtocol(self)
