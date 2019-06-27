@@ -2,12 +2,16 @@ from twisted.internet.protocol import ReconnectingClientFactory
 from twisted.protocols.basic import LineReceiver
 from twisted.internet import protocol
 
+from ..network import *
+from ..command.repository.network import ServerNetworkRepository
+
 class PeerProtocol(LineReceiver):
     def __init__(self, command_parser):
         self.command_parser = command_parser
 
     def connectionMade(self):
         self.sendLine(b"PEER")
+        ServerNetworkRepository.peer_protocols.add(self)
 
     def lineReceived(self, line):
         decoded_line = line.decode("utf-8")

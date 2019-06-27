@@ -1,11 +1,12 @@
 import datetime
 import json
 import socket
+import threading
 
-from .. import *
+from ..domain import CacheItem
 from .base import BaseRepository
 
-class NetworkRepository(BaseRepository):
+class ClientNetworkRepository(BaseRepository):
     delimiter = b'\r\n'
 
     def __init__(self, settings):
@@ -45,6 +46,20 @@ class NetworkRepository(BaseRepository):
 
     def store(self, cache_item):
         command = "STR " + cache_item.key + " " + json.dumps(cache_item.data)
-        response = self.send_command_to_server(command)
-        
-        return response == 'ACK'
+
+        thread = threading.Thread(target = self.send_command_to_server, args = (command,))
+        thread.start()
+
+class ServerNetworkRepository(BaseRepository):
+    peer_protocols = set()
+    def __init__(self, settings):
+        super().__init__(settings) 
+
+    def retrieve(self, key):
+        return None
+
+    def store(self, cache_item):
+        command = "STR " + cache_item.key + " " + json.dumps(cache_item.data)
+
+        for peer in ServerNetworkRepository.peer_protocols:
+            peer.sendLine(command.encode())

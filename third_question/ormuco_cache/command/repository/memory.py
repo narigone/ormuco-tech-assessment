@@ -24,6 +24,9 @@ class MemoryRepository(BaseRepository):
             return None
         elif index > 0:
             del self.cached_items[index]
+            if self.settings.cache_renew_on_hit:
+                expiration_date = datetime.datetime.now() + datetime.timedelta(seconds=self.settings.cache_expiration)
+                cache_hit.expires = expiration_date
             self.cached_items.appendleft(cache_hit)
 
         return cache_hit
