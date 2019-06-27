@@ -16,3 +16,4 @@ class OrmucoCacheServerSettings(OrmucoCacheClientSettings):
     def __init__(self):
         super().__init__()
         self.is_server = True
+        self.peers = set()

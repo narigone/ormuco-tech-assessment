@@ -3,28 +3,33 @@ from twisted.protocols import basic
 
 import json
 
-class PublishProtocol(basic.LineReceiver):
+class ServerProtocol(basic.LineReceiver):
     def __init__(self, factory):
         self.factory = factory
 
-    def connectionMade(self):
-        self.factory.clients.add(self)
+    #def connectionMade(self):
+    #    self.factory.clients.add(self)
 
     def connectionLost(self, reason):
-        self.factory.clients.remove(self)
+        try:
+            self.factory.peers.remove(self)
+        except:
+            pass
 
     def lineReceived(self, line):
         decoded_line = line.decode("utf-8")
-        result = self.factory.command_parser.parse(line.decode("utf-8"))
 
-        for client in self.factory.clients:
-            if self.is_client_sender(client, self.transport):
-                self.send_response_to_emitter(result, client)
-            elif decoded_line.startswith('STR'):
-                client.sendLine(line)
+        if decoded_line == "PEER":
+            self.factory.peers.add(self)
+            self.sendLine(b"ACK")
+        else:
+            result = self.factory.command_parser.parse(line.decode("utf-8"))
+            self.send_response_to_emitter(result, self)
 
-    def is_client_sender(self, client, sender):
-        return client.transport.repstr == sender.repstr
+            # Propagate store command to peers
+            if decoded_line.startswith('STR'):
+                for peer in self.factory.peers:
+                    peer.sendLine(line)
 
     def send_response_to_emitter(self, result, client):
         try:
@@ -39,10 +44,10 @@ class PublishProtocol(basic.LineReceiver):
             client.sendLine(b"NOP")
 
 
-class PublishFactory(protocol.Factory):
+class ServerProtocolFactory(protocol.Factory):
     def __init__(self, command_parser):
-        self.clients = set()
+        self.peers = set()
         self.command_parser = command_parser
 
     def buildProtocol(self, addr):
-        return PublishProtocol(self)
+        return ServerProtocol(self)
