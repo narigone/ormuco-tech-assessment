@@ -29,7 +29,8 @@ class ServerProtocol(basic.LineReceiver):
             # Propagate store command to peers
             if decoded_line.startswith('STR'):
                 for peer in self.factory.peers:
-                    peer.sendLine(line)
+                    if peer != self:
+                        peer.sendLine(line)
 
     def send_response_to_emitter(self, result, client):
         try:
@@ -41,7 +42,7 @@ class ServerProtocol(basic.LineReceiver):
                 payload = json.dumps(result)
                 client.sendLine(payload.encode())
         except:
-            client.sendLine(b"NOP")
+            client.sendLine(b"NOOP")
 
 
 class ServerProtocolFactory(protocol.Factory):

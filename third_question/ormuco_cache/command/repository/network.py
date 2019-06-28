@@ -52,6 +52,8 @@ class ClientNetworkRepository(BaseRepository):
 
 class ServerNetworkRepository(BaseRepository):
     peer_protocols = set()
+
+    last_peer = None
     def __init__(self, settings):
         super().__init__(settings) 
 
@@ -62,4 +64,5 @@ class ServerNetworkRepository(BaseRepository):
         command = "STR " + cache_item.key + " " + json.dumps(cache_item.data)
 
         for peer in ServerNetworkRepository.peer_protocols:
-            peer.sendLine(command.encode())
+            if peer != ServerNetworkRepository.last_peer:
+                peer.sendLine(command.encode())

@@ -16,6 +16,7 @@ class PeerProtocol(LineReceiver):
     def lineReceived(self, line):
         decoded_line = line.decode("utf-8")
         if decoded_line != 'ACK':
+            ServerNetworkRepository.last_peer = self
             self.command_parser.parse(line.decode("utf-8"))
 
 

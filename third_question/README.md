@@ -75,10 +75,56 @@ LISTEN_ON=11142
 PEERS=peer1:11142,peer2:11142
 ```
 
+## Under the hood
+
+First, let's talk about how the client is organized. Each client has a in-memory repository, that stores data in a list structure. It also has, if properly configured, a network repository that if falls back in case of a cache miss. When the client is asked to store a given value, it stores it in the memory repository and then launches a background thread to send it to it's server.
+
+The server works with a very simple protocol. All messages are one line in length, using \r\n as the line delimiter. There are three possible commands:
+* Store command:
+```
+STR <key> <data_in_json_format>
+```
+
+* Retrieve command:
+```
+RTRV <key>
+```
+
+* And register as peer command:
+```
+PEER
+```
+
+* Store and peer commands respond with an Acknowledgement response on success:
+```
+ACK
+```
+
+* Retrieve command responds with two possible response:
+```
+MISS 
+```
+== or ==
+```
+<data_in_json_format>
+```
+
+* All other cases will receive a No-Op response:
+
+```
+NOOP
+```
+
+
+**JavaScript Object Notation (JSON)** was chosen as the format for client/server communcation as it is a language-independent and open-standard data format. It should simplify creating clients in other languages, should the need arise.
+
+Servers that are registered as peers will maintain a persistent connection between each other and propagate **Store** commands. There is no master-slave hierarchy, all nodes are equal in receiving and dispatching such commands.
+
 ## Backlog
 
 This project was created as a proof of concept. It still requires a few features before it is production ready:
 * **Authentication**: As is, all connections are accepted. Coming up with an authentication architecture is necessary.
+* **Custom serialization/deserialization**: Currently, data is converted to JSON. While it is very flexible, objects will be deserialized as dictionaries. The ability to plugin new serializers and deserializers would fix that.
 * **Network Encryption**: Right now, all connections are unecrypted over TCP/IP. Will study how to integrate with Let's Encrypt and other SSL/TLS authorities.
 * **Packaging**: Need to publish it on PyPi, to make it easier to use.
 
