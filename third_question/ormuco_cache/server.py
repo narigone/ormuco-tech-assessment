@@ -1,6 +1,6 @@
-from .command import RetrieveCommand, StoreCommand, CommandParser
-from .network import PeerProtocolFactory, ServerProtocolFactory
-from .settings import OrmucoCacheServerSettings
+from ormuco_cache.command import RetrieveCommand, StoreCommand, CommandParser
+from ormuco_cache.network import PeerProtocolFactory, ServerProtocolFactory
+from ormuco_cache.settings import OrmucoCacheServerSettings
 
 from twisted.internet import reactor, endpoints
 

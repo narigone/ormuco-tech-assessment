@@ -1,4 +1,4 @@
-from .repository import RepositoryFactory
+from ormuco_cache.repository import RepositoryFactory
 
 class RetrieveCommand:
     COMMAND_PREFIX = 'RTRV'

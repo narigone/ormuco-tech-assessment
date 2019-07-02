@@ -1,5 +1,5 @@
-from .command import RetrieveCommand, StoreCommand
-from .settings import OrmucoCacheClientSettings
+from ormuco_cache.command import RetrieveCommand, StoreCommand
+from ormuco_cache.settings import OrmucoCacheClientSettings
 
 class OrmucoCacheClient:
     def __init__(self, settings = None):

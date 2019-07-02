@@ -1,7 +1,7 @@
 from collections import deque
 from datetime import datetime
 
-from .base import BaseRepository
+from ormuco_cache.repository.base import BaseRepository
 
 
 class MemoryRepository(BaseRepository):

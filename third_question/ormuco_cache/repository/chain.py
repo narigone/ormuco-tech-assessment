@@ -1,6 +1,6 @@
-from .base import BaseRepository
-from .memory import MemoryRepository
-from .network import ClientNetworkRepository, ServerNetworkRepository
+from ormuco_cache.repository.base import BaseRepository
+from ormuco_cache.repository.memory import MemoryRepository
+from ormuco_cache.repository.network import ClientNetworkRepository, ServerNetworkRepository
 
 
 class ChainClientRepository(BaseRepository):

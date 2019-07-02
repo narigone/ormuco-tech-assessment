@@ -3,8 +3,8 @@ import json
 import socket
 import threading
 
-from ..domain import CacheItem
-from .base import BaseRepository
+from ormuco_cache.domain import CacheItem
+from ormuco_cache.repository.base import BaseRepository
 
 class ClientNetworkRepository(BaseRepository):
     delimiter = b'\r\n'

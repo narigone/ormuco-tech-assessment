@@ -1,7 +1,7 @@
 import datetime
 
-from .repository import RepositoryFactory
-from .domain import CacheItem
+from ormuco_cache.repository import RepositoryFactory
+from ormuco_cache.domain import CacheItem
 
 class StoreCommand:
     COMMAND_PREFIX = 'STR'

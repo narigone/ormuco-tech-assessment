@@ -2,8 +2,8 @@ from twisted.internet.protocol import ReconnectingClientFactory
 from twisted.protocols.basic import LineReceiver
 from twisted.internet import protocol
 
-from ..network import *
-from ..command.repository.network import ServerNetworkRepository
+from ormuco_cache.network import *
+from ormuco_cache.repository.network import ServerNetworkRepository
 
 class PeerProtocol(LineReceiver):
     def __init__(self, command_parser):

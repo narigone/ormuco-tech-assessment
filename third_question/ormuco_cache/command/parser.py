@@ -1,5 +1,5 @@
-from .retrieve import RetrieveCommand
-from .store import  StoreCommand
+from ormuco_cache.command.retrieve import RetrieveCommand
+from ormuco_cache.command.store import  StoreCommand
 
 import json
 

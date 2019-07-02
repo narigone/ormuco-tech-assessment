@@ -1,5 +1,5 @@
-from .memory import MemoryRepository
-from .chain import ChainClientRepository, ChainServerRepository
+from ormuco_cache.repository.memory import MemoryRepository
+from ormuco_cache.repository.chain import ChainClientRepository, ChainServerRepository
 
 
 class RepositoryFactory:
