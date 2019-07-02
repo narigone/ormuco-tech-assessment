@@ -64,11 +64,14 @@ CACHE_EXPIRATION=3600
 # Determines whether the cache item's expiration is reset when a client requests it
 CACHE_RENEW_ON_HIT=True
 
+# Time in seconds after which a cache network fetch/store is stopped and considered a failure
+NETWORK_TIMEOUT = 1.0
+
 # Client-only configuration: designates server host and port for connection. Leave it blank for stand-alone in-memory caching
 SERVER_HOST=localhost
 SERVER_PORT=11142
 
-# Server-only configuration: assign which port it will listen on
+# Server-only configuration: assigns which port it will listen on
 LISTEN_ON=11142
 
 # Server-only configuration: comma separated peer list, using host:port format
@@ -77,7 +80,7 @@ PEERS=peer1:11142,peer2:11142
 
 ## Under the hood
 
-First, let's talk about how the client is organized. Each client has a in-memory repository, that stores data in a list structure. It also has, if properly configured, a network repository that if falls back in case of a cache miss. When the client is asked to store a given value, it stores it in the memory repository and then launches a background thread to send it to it's server.
+First, let's talk about how the client is organized. Each client has a in-memory repository, that stores data in a list structure. It also has, if properly configured, a network repository that it falls back to in case of a cache miss. When the client is asked to store a given value, it stores it in the memory repository and then launches a background thread to send it to it's server.
 
 The server works with a very simple protocol. All messages are one line in length, using \r\n as the line delimiter. There are three possible commands:
 * Store command:
@@ -95,12 +98,12 @@ RTRV <key>
 PEER
 ```
 
-* Store and peer commands respond with an Acknowledgement response on success:
+* Store and peer commands are responded with an Acknowledgement response on success:
 ```
 ACK
 ```
 
-* Retrieve command responds with two possible response:
+* Retrieve command response can be one of two:
 ```
 MISS 
 ```

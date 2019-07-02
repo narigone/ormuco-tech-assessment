@@ -1,10 +1,10 @@
 import datetime
 import json
 import socket
-import threading
 
 from ormuco_cache.domain import CacheItem
 from ormuco_cache.repository.base import BaseRepository
+from ormuco_cache.util import ThreadWithReturnValue
 
 class ClientNetworkRepository(BaseRepository):
     delimiter = b'\r\n'
@@ -33,9 +33,13 @@ class ClientNetworkRepository(BaseRepository):
     def retrieve(self, key):
         command = "RTRV " + key
 
-        json_data = self.send_command_to_server(command)
+        thread = ThreadWithReturnValue(target = self.send_command_to_server, args = (command,))
+        thread.setDaemon(True)
+        thread.start()
+        
+        json_data = thread.join(timeout=self.settings.timeout)
 
-        if json_data == 'MISS':
+        if json_data == 'MISS' or thread.isAlive():
             return None
         else:
             expiration_date = datetime.datetime.now() + datetime.timedelta(seconds=self.settings.cache_expiration)
@@ -43,12 +47,19 @@ class ClientNetworkRepository(BaseRepository):
             cache_item = CacheItem(key, data, expiration_date) 
             return cache_item
 
-
     def store(self, cache_item):
         command = "STR " + cache_item.key + " " + json.dumps(cache_item.data)
 
-        thread = threading.Thread(target = self.send_command_to_server, args = (command,))
+        thread = ThreadWithReturnValue(target = self.send_command_to_server, args = (command,))
+        thread.setDaemon(True)
         thread.start()
+        
+        json_data = thread.join(timeout=self.settings.timeout)
+
+        if json_data == 'ACK':
+            return True
+        else:
+            return False
 
 class ServerNetworkRepository(BaseRepository):
     peer_protocols = set()

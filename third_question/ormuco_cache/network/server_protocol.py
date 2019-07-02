@@ -7,9 +7,6 @@ class ServerProtocol(basic.LineReceiver):
     def __init__(self, factory):
         self.factory = factory
 
-    #def connectionMade(self):
-    #    self.factory.clients.add(self)
-
     def connectionLost(self, reason):
         try:
             self.factory.peers.remove(self)

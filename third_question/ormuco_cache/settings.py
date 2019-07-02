@@ -14,6 +14,7 @@ class OrmucoCacheClientSettings:
         self.cache_max_size = int(os.getenv('CACHE_MAX_SIZE')) if os.getenv('CACHE_MAX_SIZE') else 128
         self.cache_expiration = int(os.getenv('CACHE_EXPIRATION')) if os.getenv('CACHE_EXPIRATION') else 3600
         self.cache_renew_on_hit = True if os.getenv('CACHE_RENEW_ON_HIT') == 'True' else False 
+        self.timeout = float(os.getenv('NETWORK_TIMEOUT')) if os.getenv('NETWORK_TIMEOUT') else 1.0
 
         server_host = os.getenv('SERVER_HOST')
         server_port = int(os.getenv('SERVER_PORT'))

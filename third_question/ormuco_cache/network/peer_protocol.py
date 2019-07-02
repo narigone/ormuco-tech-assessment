@@ -30,9 +30,7 @@ class PeerProtocolFactory(ReconnectingClientFactory):
         return PeerProtocol(self.command_parser)
 
     def clientConnectionLost(self, connector, reason):
-        #print('Lost connection.  Reason:', reason)
         ReconnectingClientFactory.clientConnectionLost(self, connector, reason)
 
     def clientConnectionFailed(self, connector, reason):
-        #print('Connection failed. Reason:', reason)
         ReconnectingClientFactory.clientConnectionFailed(self, connector, reason)
