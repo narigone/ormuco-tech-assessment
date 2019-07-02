@@ -3,3 +3,5 @@ __pycache__
 env/
 .env
 test-client.py
+htmlcov
+.coverage

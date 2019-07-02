@@ -1,16 +1,15 @@
-import datetime
-
 from ormuco_cache.repository import RepositoryFactory
-from ormuco_cache.domain import CacheItem
+from ormuco_cache.domain import CacheItemFactory
+
 
 class StoreCommand:
     COMMAND_PREFIX = 'STR'
 
-    def __init__(self, settings): 
+    def __init__(self, settings):
         self.settings = settings
-        self.repository = RepositoryFactory.buildRepository(settings)
+        self.repository = RepositoryFactory.build_repository(settings)
+        self.cache_item_factory = CacheItemFactory(self.settings)
 
-    def execute(self, key, data, with_dispatch = True):
-        expiration_date = datetime.datetime.now() + datetime.timedelta(seconds=self.settings.cache_expiration)
-        cache_item = CacheItem(key, data, expiration_date)
+    def execute(self, key, data):
+        cache_item = self.cache_item_factory.build_cache_item(key, data)
         return self.repository.store(cache_item)

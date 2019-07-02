@@ -1,8 +1,7 @@
-import datetime
 import json
 import socket
 
-from ormuco_cache.domain import CacheItem
+from ormuco_cache.domain import CacheItemFactory
 from ormuco_cache.repository.base import BaseRepository
 from ormuco_cache.util import ThreadWithReturnValue
 
@@ -10,7 +9,8 @@ class ClientNetworkRepository(BaseRepository):
     delimiter = b'\r\n'
 
     def __init__(self, settings):
-        super().__init__(settings) 
+        super().__init__(settings)
+        self.cache_item_factory = CacheItemFactory(self.settings)
  
     def send_command_to_server(self, command):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -39,13 +39,10 @@ class ClientNetworkRepository(BaseRepository):
         
         json_data = thread.join(timeout=self.settings.timeout)
 
-        if json_data == 'MISS' or thread.isAlive():
+        if json_data == None or json_data == 'MISS' or thread.isAlive():
             return None
         else:
-            expiration_date = datetime.datetime.now() + datetime.timedelta(seconds=self.settings.cache_expiration)
-            data = json.loads(json_data)
-            cache_item = CacheItem(key, data, expiration_date) 
-            return cache_item
+            return self.cache_item_factory.restore_cache_item(key, json_data)
 
     def store(self, cache_item):
         command = "STR " + cache_item.key + " " + json.dumps(cache_item.data)

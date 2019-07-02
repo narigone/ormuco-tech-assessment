@@ -1,5 +1,5 @@
 from collections import deque
-from datetime import datetime
+import datetime
 
 from ormuco_cache.repository.base import BaseRepository
 
@@ -19,15 +19,16 @@ class MemoryRepository(BaseRepository):
         return None
 
     def handle_cache_hit(self, cache_hit, index):
-        if cache_hit.expires < datetime.now():
+        if cache_hit.expires < datetime.datetime.now():
             del self.cached_items[index]
             return None
         elif index > 0:
             del self.cached_items[index]
-            if self.settings.cache_renew_on_hit:
-                expiration_date = datetime.datetime.now() + datetime.timedelta(seconds=self.settings.cache_expiration)
-                cache_hit.expires = expiration_date
             self.cached_items.appendleft(cache_hit)
+
+        if self.settings.cache_renew_on_hit:
+            expiration_date = datetime.datetime.now() + datetime.timedelta(seconds=self.settings.cache_expiration)
+            cache_hit.expires = expiration_date
 
         return cache_hit
 

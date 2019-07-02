@@ -35,7 +35,7 @@ class RepositoryFactory:
         else:
             return RepositoryFactory.get_memory_repository(settings)
 
-    def buildRepository(settings):
+    def build_repository(settings):
         if not settings.is_server:
             return RepositoryFactory.get_client_repository(settings)
         else:
